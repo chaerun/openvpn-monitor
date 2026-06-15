@@ -75,6 +75,7 @@ class ConfigLoader(object):
         global_vars = [
             'site',
             'logo',
+            'favicon',
             'latitude',
             'longitude',
             'enable_maps',

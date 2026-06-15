@@ -1,6 +1,7 @@
 [openvpn-monitor]
 site=Example
 #logo=logo.jpg
+#favicon=favicon.ico
 #latitude=40.72
 #longitude=-74
 enable_maps=True

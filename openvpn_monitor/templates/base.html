@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="refresh" content="300">
     <title>{{ site }} OpenVPN Status Monitor</title>
+    {% if favicon %}
+      <link rel="shortcut icon" href="{{ url_for('get_favicon') }}">
+    {% endif %}
     {% include 'css.html' %}
     {% include 'js.html' %}
   </head>

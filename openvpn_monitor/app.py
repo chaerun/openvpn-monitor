@@ -22,7 +22,7 @@ import os
 import secrets
 import sys
 from datetime import datetime
-from flask import Flask, request, render_template, send_file, current_app
+from flask import Flask, request, render_template, send_file, current_app, redirect
 from flask_wtf import CSRFProtect
 from humanize import naturalsize
 from pprint import pformat
@@ -153,6 +153,7 @@ def openvpn_monitor_wsgi():
     def inject_settings():
         site = settings.get('site', 'Example')
         logo = settings.get('logo')
+        favicon = settings.get('favicon')
         enable_maps = is_truthy(settings.get('enable_maps', False))
         maps_height = settings.get('maps_height', 500)
         latitude = settings.get('latitude', 40.72)
@@ -167,6 +168,7 @@ def openvpn_monitor_wsgi():
         return dict(
             site=site,
             logo=logo,
+            favicon=favicon,
             enable_maps=enable_maps,
             maps_height=maps_height,
             latitude=latitude,
@@ -194,6 +196,27 @@ def openvpn_monitor_wsgi():
             logging.info(f'Using `{logo_file}` for logo (static)')
             return current_app.send_static_file(static_logo)
         logging.error(f'Logo defined but image not found, skipping')
+        return '', 404
+
+    @app.route('/favicon.ico')
+    def get_favicon():
+        favicon = settings.get('favicon')
+        if not favicon:
+            logging.warning('No favicon defined in settings')
+            return '', 204
+        if favicon.startswith('http'):
+            logging.info(f'Using `{favicon}` for favicon (http link)')
+            return redirect(favicon)
+        favicon_file = os.path.join('/etc/openvpn-monitor', favicon)
+        if os.path.isfile(favicon_file) and os.access(favicon_file, os.R_OK):
+            logging.info(f'Using `{favicon_file}` for favicon')
+            return send_file(favicon_file)
+        favicon_file = os.path.join(cwd, 'static/images', favicon)
+        if os.path.isfile(favicon_file) and os.access(favicon_file, os.R_OK):
+            static_favicon = f'images/{favicon}'
+            logging.info(f'Using `{favicon_file}` for favicon (static)')
+            return current_app.send_static_file(static_favicon)
+        logging.error(f'Favicon defined but icon not found, skipping')
         return '', 404
 
     @app.route('/', methods=['GET', 'POST'])
