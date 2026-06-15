@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
 
+import importlib.metadata
 import logging
 import os
 import secrets
@@ -157,6 +158,12 @@ def openvpn_monitor_wsgi():
         latitude = settings.get('latitude', 40.72)
         longitude = settings.get('longitude', -74)
         datetime_format = settings.get('datetime_format', '%d/%m/%Y %H:%M:%S')
+
+        try:
+            app_version = importlib.metadata.version("openvpn-monitor")
+        except Exception:
+            app_version = ''
+
         return dict(
             site=site,
             logo=logo,
@@ -165,6 +172,7 @@ def openvpn_monitor_wsgi():
             latitude=latitude,
             longitude=longitude,
             datetime_format=datetime_format,
+            app_version=app_version
         )
 
     @app.route('/images/logo', methods=['GET'])
