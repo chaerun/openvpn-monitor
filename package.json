@@ -6,7 +6,7 @@
   "author": "Marcus Furlong <furlongm@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "bootstrap3": "^3.3.5",
+    "bootstrap": "^3.4.1",
     "jquery": "^3.7.1",
     "leaflet": "^1.9.4",
     "leaflet.fullscreen": "^3.0.2",
